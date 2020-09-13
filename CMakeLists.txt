@@ -5,6 +5,9 @@ find_package(catkin REQUIRED COMPONENTS
     std_msgs
     mur_common
     )
+
+catkin_package()
+
 add_definitions(-std=c++14)
 include_directories(src ${catkin_INCLUDE_DIRS})
 

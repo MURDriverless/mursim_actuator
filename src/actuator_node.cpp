@@ -1,10 +1,17 @@
 #include "actuator_node.h"
+#include <iostream>
 
-Actuator::Actuator(ros::NodeHandle &n, std::string &veh_name, bool &equal_drive)
+Actuator::Actuator(ros::NodeHandle n, std::string &veh_name, bool &equal_drive)
     : equal_drive(equal_drive), nh(n), veh_name(veh_name)
 {
-    launchSubscribers(); 
-    launchPublishers(); 
+
+    if (ros::ok())
+     {
+        launchSubscribers(); 
+        launchPublishers(); 
+     }
+
+    ROS_INFO_STREAM("Publishers and subscribers launched.");
 }
 
 int Actuator::launchPublishers()
@@ -13,7 +20,7 @@ int Actuator::launchPublishers()
     pub_drive_lr = nh.advertise<std_msgs::Float64>("/" + veh_name + DRIVE_LR_TOPIC, 1);
     pub_drive_rf = nh.advertise<std_msgs::Float64>("/" + veh_name + DRIVE_RF_TOPIC, 1);
     pub_drive_rr = nh.advertise<std_msgs::Float64>("/" + veh_name + DRIVE_RR_TOPIC, 1);
-    pub_steer = nh.advertise<std_msgs::Float64>("/" + veh_name + STEER_TOPIC, 1);
+    pub_steer = nh.advertise<std_msgs::Float64MultiArray>("/" + veh_name + STEER_TOPIC, 1);
 }
 
 int Actuator::launchSubscribers()
@@ -24,23 +31,42 @@ int Actuator::launchSubscribers()
 void Actuator::pushEqualDrive(const float &n_acc)
 {
     float max_wheel_tq = MAX_TORQUE / 4;
-    pub_drive_lf.publish(n_acc * max_wheel_tq);
-    pub_drive_lr.publish(n_acc * max_wheel_tq);
-    pub_drive_rf.publish(n_acc * max_wheel_tq);
-    pub_drive_rr.publish(n_acc * max_wheel_tq);
+
+    std_msgs::Float64 acc_msg;
+    acc_msg.data = max_wheel_tq * n_acc;
+
+    pub_drive_lf.publish(acc_msg);
+    pub_drive_lr.publish(acc_msg);
+    pub_drive_rf.publish(acc_msg);
+    pub_drive_rr.publish(acc_msg);
 }
 
 void Actuator::pushSteer(const float &steer)
 {
-    pub_steer.publish(steer);
+    std::vector<float> steer_cmd {steer, steer};
+    
+    std_msgs::Float64MultiArray steer_msg;
+    steer_msg.layout.dim.push_back(std_msgs::MultiArrayDimension());
+    steer_msg.layout.dim[0].size = steer_cmd.size();
+    steer_msg.layout.dim[0].stride = 1;
+
+    steer_msg.data.clear();
+    steer_msg.data.insert(steer_msg.data.end(), steer_cmd.begin(), steer_cmd.end());
+    std::cout << steer_msg << std::endl;
+
+    pub_steer.publish(steer_msg);
 }
 
+void Actuator::spin()
+{
+    ros::spinOnce();
+}
 
 void Actuator::ctrlCallback(const mur_common::actuation_msg &msg)
 {
     if (equal_drive)
     {
-	pushEqualDrive(msg.acceleration_threshold);
+	   pushEqualDrive(msg.acceleration_threshold);
     }
 
     pushSteer(msg.steering);
@@ -57,13 +83,10 @@ int main(int argc, char **argv)
     n.getParam("vehicle_model", model);
     n.getParam("equal_drive", eq_drive);
 
-    if (ros::ok())
-    {
-	Actuator actuator(n, model, eq_drive);
-    }
-
+    Actuator actuator(n, model, eq_drive);
+	
     while (ros::ok())
     {
-	ros::spin();		
+        actuator.spin();
     }
 }

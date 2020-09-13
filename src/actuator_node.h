@@ -3,6 +3,7 @@
 
 #include <ros/ros.h>
 #include <std_msgs/Float64.h>
+#include <std_msgs/Float64MultiArray.h>
 #include <mur_common/actuation_msg.h>
 
 #define CONTROL_TOPIC "/mur/control/actuation"
@@ -15,10 +16,12 @@
 class Actuator 
 {
 public:
-    Actuator(ros::NodeHandle&, std::string&, bool&);
+    Actuator(ros::NodeHandle, std::string&, bool&);
+    void spin();
+
 private:
     bool equal_drive;
-    const float MAX_TORQUE = 400.0;
+    const float MAX_TORQUE = 100000;
     std::string veh_name;
     ros::NodeHandle nh;
 
