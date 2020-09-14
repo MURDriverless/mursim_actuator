@@ -31,6 +31,7 @@ int Actuator::launchSubscribers()
 void Actuator::pushEqualDrive(const float &n_acc)
 {
     float max_wheel_tq = MAX_TORQUE / 4;
+    std::cout << max_wheel_tq << ' ' << n_acc << std::endl;
 
     std_msgs::Float64 acc_msg;
     acc_msg.data = max_wheel_tq * n_acc;
