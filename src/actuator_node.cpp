@@ -30,11 +30,20 @@ int Actuator::launchSubscribers()
 
 void Actuator::pushEqualDrive(const float &n_acc)
 {
-    float max_wheel_tq = MAX_TORQUE / 4;
-    std::cout << max_wheel_tq << ' ' << n_acc << std::endl;
+    float max_wheel_tq;
+
+    if (n_acc < 0)
+    {
+        max_wheel_tq = MAX_BRAKE_TORQUE / 4;
+    }
+    else
+    {
+        max_wheel_tq = MAX_ACC_TORQUE / 4;
+    }
 
     std_msgs::Float64 acc_msg;
     acc_msg.data = max_wheel_tq * n_acc;
+    std::cout << "Acc: " << max_wheel_tq * n_acc << std::endl;
 
     pub_drive_lf.publish(acc_msg);
     pub_drive_lr.publish(acc_msg);
@@ -53,7 +62,7 @@ void Actuator::pushSteer(const float &steer)
 
     steer_msg.data.clear();
     steer_msg.data.insert(steer_msg.data.end(), steer_cmd.begin(), steer_cmd.end());
-    std::cout << steer_msg << std::endl;
+    std::cout << "Steer: " << steer << std::endl;
 
     pub_steer.publish(steer_msg);
 }

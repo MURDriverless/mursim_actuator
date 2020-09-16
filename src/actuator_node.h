@@ -21,7 +21,8 @@ public:
 
 private:
     bool equal_drive;
-    const float MAX_TORQUE = 50;
+    const float MAX_ACC_TORQUE = 40;
+    const float MAX_BRAKE_TORQUE = -500;
     std::string veh_name;
     ros::NodeHandle nh;
 
