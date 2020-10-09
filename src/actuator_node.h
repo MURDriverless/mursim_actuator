@@ -18,8 +18,10 @@ public:
 
 private:
     bool equal_drive;
+
     static constexpr float MAX_OVERALL_TORQUE = 100;
     static constexpr float MAX_WHEEL_TORQUE = MAX_OVERALL_TORQUE / 4;
+
     std::string veh_name;
     ros::NodeHandle nh;
 

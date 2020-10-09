@@ -41,6 +41,7 @@ void Actuator::pushEqualDrive(const float &n_acc)
     drive_msg.data.assign({acc_msg, acc_msg, acc_msg, acc_msg});
     pub_drive.publish(drive_msg);
 
+
     std::cout << "Drive message: ";
     printMessage(drive_msg.data);
     std::cout << std::endl;
@@ -50,6 +51,7 @@ void Actuator::pushSteer(const float &steer)
 {
     steer_msg.data.clear();
     steer_msg.data.assign({steer, steer});
+
     pub_steer.publish(steer_msg);
 
     std::cout << "Steer message: ";
