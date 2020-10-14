@@ -37,26 +37,15 @@ void Actuator::pushEqualDrive(const float &n_acc)
 {
     float acc_msg = n_acc * MAX_WHEEL_TORQUE;
 
-    drive_msg.data.clear();
     drive_msg.data.assign({acc_msg, acc_msg, acc_msg, acc_msg});
     pub_drive.publish(drive_msg);
-
-
-    std::cout << "Drive message: ";
-    printMessage(drive_msg.data);
-    std::cout << std::endl;
 }
 
 void Actuator::pushSteer(const float &steer)
 {
-    steer_msg.data.clear();
     steer_msg.data.assign({steer, steer});
 
     pub_steer.publish(steer_msg);
-
-    std::cout << "Steer message: ";
-    printMessage(steer_msg.data);
-    std::cout << std::endl;
 }
 
 void Actuator::printMessage(const std::vector<double>& cmd)
@@ -94,9 +83,11 @@ int main(int argc, char **argv)
     n.getParam("equal_drive", eq_drive);
 
     Actuator actuator(n, model, eq_drive);
+    ros::Rate freq(20);
 	
     while (ros::ok())
     {
         actuator.spin();
+        freq.sleep();
     }
 }
