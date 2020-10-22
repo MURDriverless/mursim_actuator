@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 <launch>
-    <node pkg="mursim_actuator" type="actuator_node" name="mursim_actuator" output="screen"/>
-    <param name="vehicle_model" value="gotthard"/>
-    <param name="equal_drive" value="true"/>
+    <arg name="vehicle_model" default="19E"/>
+    <arg name="equal_drive" default="true"/>
+
+    <node pkg="mursim_actuator" type="actuator_node" name="mursim_actuator" output="screen">
+        <param name="vehicle_model" value="$(arg vehicle_model)"/>
+        <param name="equal_drive" value="$(arg equal_drive)"/>
+    </node>
 </launch>

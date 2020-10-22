@@ -44,16 +44,13 @@ void Actuator::pushEqualDrive(const float &n_acc)
 void Actuator::pushSteer(const float &steer)
 {
     steer_msg.data.assign({steer, steer});
-
     pub_steer.publish(steer_msg);
 }
 
 void Actuator::printMessage(const std::vector<double>& cmd)
 {
     for (auto &c: cmd)
-    {
         std::cout << c << ' ';
-    }
 }
 
 void Actuator::spin()
@@ -63,11 +60,7 @@ void Actuator::spin()
 
 void Actuator::ctrlCallback(const mur_common::actuation_msg &msg)
 {
-    if (equal_drive)
-    {
-	   pushEqualDrive(msg.acceleration_threshold);
-    }
-
+    pushEqualDrive(msg.acceleration_threshold);
     pushSteer(msg.steering);
 }
 
