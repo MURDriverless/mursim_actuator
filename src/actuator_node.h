@@ -7,8 +7,8 @@
 #include <mur_common/actuation_msg.h>
 
 #define CONTROL_TOPIC "/mur/control/actuation"
-#define STEER_TOPIC "/steer_drive_controller/steering_position_controller/command"
-#define DRIVE_TOPIC "/steer_drive_controller/wheel_drive_controller/command"
+#define STEER_TOPIC "/19E/steer_drive_controller/steering_position_controller/command"
+#define DRIVE_TOPIC "/19E/steer_drive_controller/wheel_drive_controller/command"
 
 class Actuator 
 {
