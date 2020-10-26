@@ -25,6 +25,14 @@ Actuator::Actuator(ros::NodeHandle n, std::string &veh_name, bool &equal_drive)
 int Actuator::launchPublishers()
 {
     pub_steer = nh.advertise<std_msgs::Float64MultiArray>("/" + veh_name + STEER_TOPIC, 1);
+    pub_steer_rr = nh.advertise<std_msgs::Float64>("/gotthard/steer_drive_controller/rear_right_drive_controller/command", 1);
+    pub_steer_lr = nh.advertise<std_msgs::Float64>("/gotthard/steer_drive_controller/rear_left_drive_controller/command", 1);
+    pub_steer_fr = nh.advertise<std_msgs::Float64>("/gotthard/steer_drive_controller/front_right_drive_controller/command", 1);
+    pub_steer_fl = nh.advertise<std_msgs::Float64>("/gotthard/steer_drive_controller/front_left_drive_controller/command", 1);
+    
+
+    
+
     pub_drive = nh.advertise<std_msgs::Float64MultiArray>("/" + veh_name + DRIVE_TOPIC, 1);
 }
 
@@ -39,6 +47,11 @@ void Actuator::pushEqualDrive(const float &n_acc)
 
     drive_msg.data.assign({acc_msg, acc_msg, acc_msg, acc_msg});
     pub_drive.publish(drive_msg);
+    pub_steer_lr.publish(acc_msg);
+    pub_steer_rr.publish(acc_msg);
+    pub_steer_fr.publish(acc_msg);
+    pub_steer_fl.publish(acc_msg);
+    
 }
 
 void Actuator::pushSteer(const float &steer)

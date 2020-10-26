@@ -28,6 +28,11 @@ private:
     ros::Publisher pub_steer;
     ros::Publisher pub_drive;
 
+    ros::Publisher pub_steer_rr;
+    ros::Publisher pub_steer_lr;    
+    ros::Publisher pub_steer_fr;
+    ros::Publisher pub_steer_fl;
+    
     ros::Subscriber sub_ctrl;
 
     std_msgs::Float64MultiArray drive_msg;
